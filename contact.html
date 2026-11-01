@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plan your Kashmir trip: free, transparent quote | Zaffron Valley</title>
+<script>document.documentElement.classList.add('js')</script>
+<meta name="description" content="Tell us your dates and what you love. A local trip designer sends a transparent, day-by-day Kashmir itinerary within 24 hours, no payment to see it, no pressure to book it.">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <nav class="nav" aria-label="Primary">
+      <a class="brand" href="index.html" aria-label="Zaffron Valley home">
+        <svg class="leaf" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="19" fill="#103C43" stroke="#E2912E" stroke-width="1.8"/><circle cx="20" cy="18" r="4.6" fill="#E2912E"/><path d="M5 29 L14 19 L20 25 L27 15 L35 29 Z" fill="#FAF6EE"/></svg>
+        Zaffron Valley
+      </a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="packages.html">Tour Packages</a></li>
+        <li><a href="experiences.html">Experiences</a></li>
+        <li><a href="about.html">Our Story</a></li>
+        <li><a href="contact.html" class="active">Plan a Trip</a></li>
+      </ul>
+      <div class="nav-cta">
+        <a href="contact.html" class="btn btn--primary">Plan your trip</a>
+        <button class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks"><span></span><span></span><span></span></button>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main>
+<section class="page-hero" style="padding-bottom:clamp(2rem,4vw,3rem)">
+  <div class="page-hero__art" aria-hidden="true">
+    <img src="https://images.unsplash.com/photo-1721664019597-db9075e4a341?auto=format&fit=crop&w=1600&q=70" alt="Reeds and mountains on Dal Lake" fetchpriority="high">
+  </div>
+  <div class="container">
+    <div class="crumb"><a href="index.html">Home</a> › Plan a Trip</div>
+    <h1>Let\u2019s plan your Kashmir</h1>
+    <p>Two minutes now saves a hundred WhatsApp messages later. A local designer replies within 24 hours with a transparent, day-by-day plan.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="split" style="align-items:start;grid-template-columns:1.4fr 1fr">
+
+      <!-- FORM -->
+      <div class="reveal">
+        <div class="form-card">
+          <form id="contactForm" data-validate method="POST" action="/api/submit-enquiry" novalidate>
+            <h2 style="margin-bottom:1.2rem">Tell us about your trip</h2>
+
+            <div class="grid-2">
+              <div class="field">
+                <label for="name">Your name <span class="req">*</span></label>
+                <input id="name" name="name" type="text" required autocomplete="name" placeholder="e.g. Aisha Khan">
+                <span class="err">Please enter your name.</span>
+              </div>
+              <div class="field">
+                <label for="email">Email <span class="req">*</span></label>
+                <input id="email" name="email" type="email" required autocomplete="email" placeholder="you@email.com">
+                <span class="err">Please enter a valid email.</span>
+              </div>
+            </div>
+
+            <div class="grid-2">
+              <div class="field">
+                <label for="phone">Phone / WhatsApp</label>
+                <input id="phone" name="phone" type="tel" autocomplete="tel" placeholder="+91 …">
+                <span class="err">Please check this number.</span>
+              </div>
+              <div class="field">
+                <label for="dates">Rough dates</label>
+                <input id="dates" name="dates" type="text" placeholder="e.g. mid-October, 6 days">
+              </div>
+            </div>
+
+            <div class="grid-2">
+              <div class="field">
+                <label for="travellers">Group size</label>
+                <select id="travellers" name="travellers">
+                  <option value="">Select…</option>
+                  <option>Just me</option>
+                  <option>Couple</option>
+                  <option>Family (3 to 5)</option>
+                  <option>Group (6+)</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="budget">Budget per person</label>
+                <select id="budget" name="budget">
+                  <option value="">Select…</option>
+                  <option>Under ₹20,000</option>
+                  <option>₹20,000 to ₹35,000</option>
+                  <option>₹35,000 to ₹60,000</option>
+                  <option>₹60,000+ / luxury</option>
+                  <option>Not sure yet</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="field">
+              <label>What are you most into? <span class="muted" style="font-weight:400">(pick any)</span></label>
+              <div class="chips">
+                <label class="chip"><input type="checkbox" name="interests" value="Nature & lakes">Nature &amp; lakes</label>
+                <label class="chip"><input type="checkbox" name="interests" value="Snow & adventure">Snow &amp; adventure</label>
+                <label class="chip"><input type="checkbox" name="interests" value="Food & Wazwan">Food &amp; Wazwan</label>
+                <label class="chip"><input type="checkbox" name="interests" value="Crafts & culture">Crafts &amp; culture</label>
+                <label class="chip"><input type="checkbox" name="interests" value="Trekking">Trekking</label>
+                <label class="chip"><input type="checkbox" name="interests" value="Honeymoon">Honeymoon</label>
+                <label class="chip"><input type="checkbox" name="interests" value="Roots / heritage">Roots / heritage</label>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="message">Anything else? <span class="req">*</span></label>
+              <textarea id="message" name="message" required placeholder="Tell us who\u2019s coming, what you\u2019re dreaming of, must-dos, dietary needs…"></textarea>
+              <span class="err">Please add a line or two so we can help.</span>
+            </div>
+
+            <button type="submit" class="btn btn--primary btn--block">Send &amp; get my free plan
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </button>
+            <p class="form-error muted" style="display:none;margin-top:.8rem;text-align:center;color:var(--error)">Unable to send your request right now. Please email <a href="mailto:zaffronvalleytours@gmail.com">zaffronvalleytours@gmail.com</a> instead.</p>
+            <p class="muted" style="font-size:.82rem;margin-top:.8rem;text-align:center">No payment now. We reply within 24 hours. Your details are never sold.</p>
+          </form>
+
+          <!-- success state -->
+          <div class="form-ok">
+            <div class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></div>
+            <h2>Request received, shukriya!</h2>
+            <p class="muted">A local trip designer will email you a transparent, day-by-day plan within 24 hours. Keep an eye on your inbox (and spam, just in case).</p>
+            <a href="experiences.html" class="btn btn--ghost mt-2">Meanwhile, browse experiences</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- SIDEBAR -->
+      <aside class="reveal">
+        <div class="form-card" style="margin-bottom:1.2rem">
+          <h2 style="margin-bottom:.8rem">Talk to a human</h2>
+          <ul class="tick-list" style="margin-top:0">
+            <li><span class="tk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M21 11.5a8.5 8.5 0 0 1-12.4 7.5L3 21l2-5.6A8.5 8.5 0 1 1 21 11.5Z"/></svg></span><div><strong>WhatsApp</strong><br><a class="link-arrow" href="https://wa.me/916006575829" target="_blank" rel="noopener">+91 60065 75829</a></div></li>
+            <li><span class="tk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></span><div><strong>Email</strong><br><a class="link-arrow" href="mailto:zaffronvalleytours@gmail.com">zaffronvalleytours@gmail.com</a></div></li>
+            <li><span class="tk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3.1-8.7A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.3 1.8.6 2.6a2 2 0 0 1-.4 2.1L8 9.6a16 16 0 0 0 6 6l1.2-1.2a2 2 0 0 1 2.1-.5c.8.3 1.7.5 2.6.6a2 2 0 0 1 1.7 2Z"/></svg></span><div><strong>Call or WhatsApp</strong><br><a class="link-arrow" href="https://wa.me/916006575829" target="_blank" rel="noopener">+91 60065 75829</a></div></li>
+            <li><span class="tk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M21 10c0 7-9 12-9 12s-9-5-9-12a9 9 0 0 1 18 0Z"/><circle cx="12" cy="10" r="3"/></svg></span><div><strong>Office</strong><br><span class="muted">Lal Chowk, Srinagar, J&amp;K 190001</span></div></li>
+          </ul>
+        </div>
+        <div class="form-card bg-cream2">
+          <h2 style="font-size:1.2rem;margin-bottom:.6rem">Why people trust us</h2>
+          <ul class="tick-list" style="margin-top:0">
+            <li><span class="tk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span>Fixed, itemised prices, 0 hidden fees</li>
+            <li><span class="tk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span>Every host &amp; driver ID-verified</li>
+            <li><span class="tk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span>Free cancellation up to 7 days out</li>
+            <li><span class="tk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span>24/7 on-ground local support</li>
+          </ul>
+        </div>
+      </aside>
+
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-about">
+        <a class="brand" href="index.html"><svg class="leaf" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="19" fill="#0c2a30" stroke="#E2912E" stroke-width="1.8"/><circle cx="20" cy="18" r="4.6" fill="#E2912E"/><path d="M5 29 L14 19 L20 25 L27 15 L35 29 Z" fill="#FAF6EE"/></svg> Zaffron Valley</a>
+        <p>Kashmir, honestly. Transparent tours and a marketplace of verified local hosts, built and run from the valley.</p>
+        <div class="socials">
+          <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
+          <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 9V7a2 2 0 0 1 2-2h2V2h-3a4 4 0 0 0-4 4v3H8v3h3v9h3v-9h3l1-3z"/></svg></a>
+          <a href="https://wa.me/916006575829" target="_blank" rel="noopener" aria-label="WhatsApp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 11.5a8.5 8.5 0 0 1-12.4 7.5L3 21l2-5.6A8.5 8.5 0 1 1 21 11.5Z"/></svg></a>
+          <a href="#" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="4"/><path d="M10 9l5 3-5 3z" fill="currentColor"/></svg></a>
+        </div>
+      </div>
+      <div><h3>Explore</h3><a href="packages.html">Tour packages</a><br><a href="experiences.html">Local experiences</a><br><a href="experiences.html">Houseboats &amp; homestays</a><br><a href="contact.html">Build a custom trip</a></div>
+      <div><h3>Company</h3><a href="about.html">Our story</a><br><a href="about.html">Responsible travel</a><br><a href="about.html">Become a host</a><br><a href="contact.html">Contact</a></div>
+      <div><h3>Talk to a human</h3><a href="mailto:zaffronvalleytours@gmail.com">zaffronvalleytours@gmail.com</a><br><a href="https://wa.me/916006575829" target="_blank" rel="noopener">+91 60065 75829</a><br><a href="https://wa.me/916006575829" target="_blank" rel="noopener">WhatsApp: +91 60065 75829</a><br><span class="muted" style="font-size:.85rem">Lal Chowk, Srinagar, J&amp;K 190001</span></div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span data-year>2026</span> Zaffron Valley Travel Co. | Reg. J&amp;K Tourism (pending)</span>
+      <span><a href="privacy.html">Privacy</a> | <a href="terms.html">Terms</a> | <a href="refund-policy.html">Refund Policy</a></span>
+    </div>
+  </div>
+</footer>
+
+<script src="main.js"></script>
+</body>
+</html>

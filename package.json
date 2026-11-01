@@ -1,0 +1,11 @@
+{
+  "name": "zaffron-valley",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Zaffron Valley — Kashmir tourism site. The pages themselves are plain HTML/CSS/JS with no build step; these dependencies exist ONLY for the Netlify Functions in netlify/functions/.",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.0",
+    "razorpay": "^2.9.0"
+  }
+}

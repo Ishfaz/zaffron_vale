@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard — Zaffron Valley</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="site-header scrolled">
+  <div class="container">
+    <nav class="nav" aria-label="Primary">
+      <a class="brand" href="index.html" aria-label="Zaffron Valley home">
+        <svg class="leaf" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="19" fill="#103C43" stroke="#E2912E" stroke-width="1.8"/><circle cx="20" cy="18" r="4.6" fill="#E2912E"/><path d="M5 29 L14 19 L20 25 L27 15 L35 29 Z" fill="#FAF6EE"/></svg>
+        Zaffron Valley <span class="muted" style="font-size:.85rem;margin-left:.4rem">Admin</span>
+      </a>
+      <div class="nav-cta">
+        <button id="reloadBtn" class="btn btn--ghost" style="display:none">Refresh</button>
+        <button id="logoutBtn" class="btn btn--ghost" style="display:none">Log out</button>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main style="padding-top:6rem">
+
+<!-- Login -->
+<section class="section" id="loginSection">
+  <div class="container">
+    <div class="admin-login">
+      <div class="form-card">
+        <h2 style="margin-bottom:.3rem">Admin Dashboard</h2>
+        <p class="muted" style="margin-bottom:1.5rem">Enter the admin password to continue.</p>
+        <form id="loginForm">
+          <div class="field">
+            <input id="adminPass" type="password" placeholder="Password" required autocomplete="current-password">
+            <span class="err">Incorrect password.</span>
+          </div>
+          <button type="submit" class="btn btn--primary btn--block">Log in</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Dashboard -->
+<section class="section admin-panel" id="dashboard" style="padding-top:0">
+  <div class="container">
+
+    <!-- Stats -->
+    <div class="admin-stat" id="adminStats">
+      <div class="admin-stat__item"><div class="n" id="statLeads">—</div><div class="l">Total leads</div></div>
+      <div class="admin-stat__item"><div class="n" id="statNew">—</div><div class="l">New (unread)</div></div>
+      <div class="admin-stat__item"><div class="n" id="statBookings">—</div><div class="l">Bookings</div></div>
+      <div class="admin-stat__item"><div class="n" id="statRevenue">—</div><div class="l">Revenue (paid)</div></div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="admin-tabs">
+      <button class="admin-tab active" data-tab="leads">Leads</button>
+      <button class="admin-tab" data-tab="bookings">Bookings</button>
+      <button class="admin-tab" data-tab="payments">Payments</button>
+    </div>
+
+    <!-- Leads table -->
+    <div id="tab-leads">
+      <div style="overflow-x:auto">
+        <table class="admin-table">
+          <thead>
+            <tr><th>Date</th><th>Name</th><th>Email</th><th>Phone</th><th>Message</th><th>Source</th><th>Status</th></tr>
+          </thead>
+          <tbody id="leadsBody"><tr><td colspan="7" class="muted" style="text-align:center;padding:2rem">Loading…</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Bookings table -->
+    <div id="tab-bookings" style="display:none">
+      <div style="overflow-x:auto">
+        <table class="admin-table">
+          <thead>
+            <tr><th>Date</th><th>Guest</th><th>Item</th><th>Guests</th><th>Amount</th><th>Order ID</th><th>Status</th></tr>
+          </thead>
+          <tbody id="bookingsBody"><tr><td colspan="7" class="muted" style="text-align:center;padding:2rem">Loading…</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Payments table -->
+    <div id="tab-payments" style="display:none">
+      <div style="overflow-x:auto">
+        <table class="admin-table">
+          <thead>
+            <tr><th>Date</th><th>Payment ID</th><th>Booking</th><th>Amount</th><th>Method</th><th>Status</th></tr>
+          </thead>
+          <tbody id="paymentsBody"><tr><td colspan="6" class="muted" style="text-align:center;padding:2rem">Loading…</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+</main>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ------------------------------------------------------------------
+     No credentials live in this file.
+
+     The password is verified by netlify/functions/get-admin-data.js against
+     the ADMIN_PASSWORD environment variable, and the database is queried
+     there with the service role key. This page only ever receives data it
+     is already allowed to see.
+
+     Previously SUPABASE_ANON_KEY and ADMIN_PASSWORD were literals right
+     here, readable by anyone who viewed source on the live page.
+     ------------------------------------------------------------------ */
+
+  var API = '/api/get-admin-data';
+
+  var loginSection = document.getElementById('loginSection');
+  var dashboard    = document.getElementById('dashboard');
+  var loginForm    = document.getElementById('loginForm');
+  var logoutBtn    = document.getElementById('logoutBtn');
+  var passField    = document.getElementById('adminPass');
+  var reloadBtn    = document.getElementById('reloadBtn');
+  var errSpan      = loginForm ? loginForm.querySelector('.err') : null;
+
+  // Held in memory only, for the Reload button. Never written to storage —
+  // sessionStorage survives in the browser profile and is readable by any
+  // script that manages to run on this origin.
+  var sessionPassword = null;
+
+  /* ---- Escaping: customer text must never be parsed as HTML ---- */
+  function esc(v) {
+    if (v === null || v === undefined || v === '') return '—';
+    return String(v)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  function fmtDate(d) {
+    if (!d) return '—';
+    var dt = new Date(d);
+    if (isNaN(dt)) return '—';
+    return dt.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+  }
+
+  function fmtAmount(paise) {
+    if (paise === null || paise === undefined || paise === '') return '—';
+    var n = Number(paise);
+    if (isNaN(n)) return '—';
+    return '₹' + (n / 100).toLocaleString('en-IN');
+  }
+
+  function badge(status) {
+    var raw = String(status || 'new').toLowerCase();
+    var known = ['new','contacted','booked','closed','pending','paid','failed','refunded','captured'];
+    var cls = 'badge badge--' + (known.indexOf(raw) !== -1 ? raw : 'new');
+    return '<span class="' + cls + '">' + esc(status || 'new') + '</span>';
+  }
+
+  function emptyRow(cols, msg) {
+    return '<tr><td colspan="' + cols + '" class="muted" style="text-align:center;padding:2rem">' + esc(msg) + '</td></tr>';
+  }
+
+  /* ---- Tabs ---- */
+  var tabs = document.querySelectorAll('.admin-tab');
+  tabs.forEach(function (tab) {
+    tab.addEventListener('click', function () {
+      tabs.forEach(function (t) { t.classList.remove('active'); });
+      tab.classList.add('active');
+      var target = tab.getAttribute('data-tab');
+      document.getElementById('tab-leads').style.display    = target === 'leads'    ? 'block' : 'none';
+      document.getElementById('tab-bookings').style.display = target === 'bookings' ? 'block' : 'none';
+      document.getElementById('tab-payments').style.display = target === 'payments' ? 'block' : 'none';
+    });
+  });
+
+  /* ---- Login ---- */
+  loginForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var pass = passField.value;
+    if (!pass) return;
+
+    var btn = loginForm.querySelector('button[type="submit"]');
+    if (btn) { btn.disabled = true; btn.textContent = 'Checking…'; }
+    if (errSpan) errSpan.textContent = 'Incorrect password.';
+
+    load(pass)
+      .then(function () {
+        sessionPassword = pass;
+        passField.value = '';
+        loginSection.style.display = 'none';
+        dashboard.classList.add('show');
+        logoutBtn.style.display = 'inline-flex';
+        if (reloadBtn) reloadBtn.style.display = 'inline-flex';
+      })
+      .catch(function (err) {
+        if (errSpan) errSpan.textContent = err.message || 'Incorrect password.';
+        passField.closest('.field').classList.add('invalid');
+      })
+      .finally(function () {
+        if (btn) { btn.disabled = false; btn.textContent = 'Log in'; }
+      });
+  });
+
+  passField.addEventListener('input', function () {
+    passField.closest('.field').classList.remove('invalid');
+  });
+
+  /* ---- Logout ---- */
+  logoutBtn.addEventListener('click', function () {
+    sessionPassword = null;
+    location.reload();
+  });
+
+  /* ---- Fetch + render ---- */
+  function load(password) {
+    return fetch(API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password: password })
+    }).then(function (r) {
+      return r.json().catch(function () { return {}; }).then(function (body) {
+        if (!r.ok) throw new Error(body.error || 'Could not load data.');
+        return body;
+      });
+    }).then(function (data) {
+      render(data);
+      return data;
+    });
+  }
+
+  function render(data) {
+    var leads    = data.leads    || [];
+    var bookings = data.bookings || [];
+    var payments = data.payments || [];
+    var stats    = data.stats    || {};
+
+    document.getElementById('statLeads').textContent    = stats.leads || 0;
+    document.getElementById('statNew').textContent      = stats.newLeads || 0;
+    document.getElementById('statBookings').textContent = stats.bookings || 0;
+    document.getElementById('statRevenue').textContent  = fmtAmount(stats.revenue || 0);
+
+    document.getElementById('leadsBody').innerHTML = leads.length ? leads.map(function (r) {
+      return '<tr>' +
+        '<td>' + fmtDate(r.created_at) + '</td>' +
+        '<td><strong>' + esc(r.name) + '</strong></td>' +
+        '<td>' + esc(r.email) + '</td>' +
+        '<td>' + esc(r.phone) + '</td>' +
+        '<td style="max-width:220px;white-space:pre-wrap">' + esc(r.message) + '</td>' +
+        '<td>' + esc(r.source) + '</td>' +
+        '<td>' + badge(r.status) + '</td>' +
+        '</tr>';
+    }).join('') : emptyRow(7, 'No leads yet.');
+
+    document.getElementById('bookingsBody').innerHTML = bookings.length ? bookings.map(function (r) {
+      return '<tr>' +
+        '<td>' + fmtDate(r.created_at) + '</td>' +
+        '<td><strong>' + esc(r.leads ? r.leads.name : null) + '</strong></td>' +
+        '<td>' + esc(r.item_name) + '</td>' +
+        '<td>' + esc(r.guests || 1) + '</td>' +
+        '<td>' + fmtAmount(r.total_amount) + '</td>' +
+        '<td style="font-size:.78rem;font-family:monospace">' + esc(r.razorpay_order_id) + '</td>' +
+        '<td>' + badge(r.status) + '</td>' +
+        '</tr>';
+    }).join('') : emptyRow(7, 'No bookings yet.');
+
+    document.getElementById('paymentsBody').innerHTML = payments.length ? payments.map(function (r) {
+      return '<tr>' +
+        '<td>' + fmtDate(r.created_at) + '</td>' +
+        '<td style="font-size:.78rem;font-family:monospace">' + esc(r.razorpay_payment_id) + '</td>' +
+        '<td>' + esc(r.bookings ? r.bookings.item_name : null) + '</td>' +
+        '<td>' + fmtAmount(r.amount) + '</td>' +
+        '<td>' + esc(r.method) + '</td>' +
+        '<td>' + badge(r.status) + '</td>' +
+        '</tr>';
+    }).join('') : emptyRow(6, 'No payments yet.');
+  }
+
+  /* ---- Reload ---- */
+  if (reloadBtn) {
+    reloadBtn.addEventListener('click', function () {
+      if (!sessionPassword) return;
+      reloadBtn.disabled = true;
+      var original = reloadBtn.textContent;
+      reloadBtn.textContent = 'Refreshing…';
+      load(sessionPassword)
+        .catch(function (err) { alert(err.message || 'Could not refresh.'); })
+        .finally(function () { reloadBtn.disabled = false; reloadBtn.textContent = original; });
+    });
+  }
+
+  // No auto-login. There is no stored credential to auto-login with, which is
+  // the point: closing the tab ends the session.
+})();
+</script>
+</body>
+</html>

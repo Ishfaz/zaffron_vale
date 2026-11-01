@@ -252,17 +252,37 @@
     document.getElementById('statBookings').textContent = stats.bookings || 0;
     document.getElementById('statRevenue').textContent  = fmtAmount(stats.revenue || 0);
 
-    document.getElementById('leadsBody').innerHTML = leads.length ? leads.map(function (r) {
-      return '<tr>' +
+    document.getElementById('leadsBody').innerHTML = leads.length ? leads.map(function (r, i) {
+      var interests = Array.isArray(r.interests) && r.interests.length ? r.interests.map(esc).join(', ') : '—';
+      return '<tr class="lead-row" style="cursor:pointer" data-idx="' + i + '">' +
         '<td>' + fmtDate(r.created_at) + '</td>' +
         '<td><strong>' + esc(r.name) + '</strong></td>' +
         '<td>' + esc(r.email) + '</td>' +
         '<td>' + esc(r.phone) + '</td>' +
-        '<td style="max-width:220px;white-space:pre-wrap">' + esc(r.message) + '</td>' +
+        '<td style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + esc(r.message) + '</td>' +
         '<td>' + esc(r.source) + '</td>' +
         '<td>' + badge(r.status) + '</td>' +
+        '</tr>' +
+        '<tr class="lead-detail" id="detail-' + i + '" style="display:none">' +
+        '<td colspan="7" style="background:#f8f6f1;padding:1rem 1.5rem">' +
+          '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:.8rem 2rem;margin-bottom:.8rem">' +
+            '<div><strong>Dates:</strong> ' + esc(r.dates) + '</div>' +
+            '<div><strong>Travellers:</strong> ' + esc(r.travellers) + '</div>' +
+            '<div><strong>Budget:</strong> ' + esc(r.budget) + '</div>' +
+            '<div><strong>Interests:</strong> ' + interests + '</div>' +
+          '</div>' +
+          '<div><strong>Full message:</strong></div>' +
+          '<div style="white-space:pre-wrap;margin-top:.4rem;padding:.8rem;background:#fff;border-radius:6px;border:1px solid #e5e1d8">' + esc(r.message) + '</div>' +
+        '</td>' +
         '</tr>';
     }).join('') : emptyRow(7, 'No leads yet.');
+
+    document.querySelectorAll('.lead-row').forEach(function (row) {
+      row.addEventListener('click', function () {
+        var detail = document.getElementById('detail-' + row.getAttribute('data-idx'));
+        if (detail) detail.style.display = detail.style.display === 'none' ? '' : 'none';
+      });
+    });
 
     document.getElementById('bookingsBody').innerHTML = bookings.length ? bookings.map(function (r) {
       return '<tr>' +

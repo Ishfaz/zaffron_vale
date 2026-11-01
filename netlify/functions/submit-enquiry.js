@@ -126,7 +126,7 @@ export async function handler(event) {
 
     // Send emails (non-blocking — don't let email failure break the form)
     if (process.env.RESEND_API_KEY) {
-      const fromAddr = process.env.EMAIL_FROM || 'Zaffron Vale <onboarding@resend.dev>';
+      const fromAddr = process.env.EMAIL_FROM || 'Zaffron Vale <noreply@zaffronvale.com>';
       const businessEmail = process.env.BUSINESS_EMAIL || 'zaffronvalleytours@gmail.com';
       const customerName = clamp(data.name);
       const customerEmail = clamp(String(data.email).toLowerCase());

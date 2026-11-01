@@ -124,6 +124,56 @@ export async function handler(event) {
       };
     }
 
+    // Send emails (non-blocking — don't let email failure break the form)
+    if (process.env.RESEND_API_KEY) {
+      const fromAddr = process.env.EMAIL_FROM || 'Zaffron Vale <onboarding@resend.dev>';
+      const businessEmail = process.env.BUSINESS_EMAIL || 'zaffronvalleytours@gmail.com';
+      const customerName = clamp(data.name);
+      const customerEmail = clamp(String(data.email).toLowerCase());
+
+      // 1. Confirmation email to customer
+      const customerHtml = `
+        <div style="font-family:sans-serif;max-width:560px;margin:0 auto;color:#333">
+          <h2 style="color:#103C43">Thank you, ${customerName}!</h2>
+          <p>We've received your enquiry and our local travel designer will get back to you within <strong>24 hours</strong> with a personalised, day-by-day plan.</p>
+          <p>In the meantime, feel free to explore our <a href="https://zaffronvale.com/packages.html" style="color:#E2912E">curated packages</a> or reply to this email if you'd like to add anything.</p>
+          <hr style="border:none;border-top:1px solid #e5e1d8;margin:1.5rem 0">
+          <p style="font-size:.85rem;color:#777">Zaffron Vale · Kashmir Travel Experiences<br>zaffronvale.com</p>
+        </div>`;
+
+      // 2. Notification email to business
+      const bizHtml = `
+        <div style="font-family:sans-serif;max-width:600px;margin:0 auto;color:#333">
+          <h2 style="color:#103C43">New Lead from Contact Form</h2>
+          <table style="width:100%;border-collapse:collapse">
+            <tr><td style="padding:6px 12px;font-weight:bold;border-bottom:1px solid #eee">Name</td><td style="padding:6px 12px;border-bottom:1px solid #eee">${customerName}</td></tr>
+            <tr><td style="padding:6px 12px;font-weight:bold;border-bottom:1px solid #eee">Email</td><td style="padding:6px 12px;border-bottom:1px solid #eee">${customerEmail}</td></tr>
+            <tr><td style="padding:6px 12px;font-weight:bold;border-bottom:1px solid #eee">Phone</td><td style="padding:6px 12px;border-bottom:1px solid #eee">${clamp(data.phone) || '—'}</td></tr>
+            <tr><td style="padding:6px 12px;font-weight:bold;border-bottom:1px solid #eee">Dates</td><td style="padding:6px 12px;border-bottom:1px solid #eee">${clamp(data.dates) || '—'}</td></tr>
+            <tr><td style="padding:6px 12px;font-weight:bold;border-bottom:1px solid #eee">Travellers</td><td style="padding:6px 12px;border-bottom:1px solid #eee">${clamp(data.travellers) || '—'}</td></tr>
+            <tr><td style="padding:6px 12px;font-weight:bold;border-bottom:1px solid #eee">Budget</td><td style="padding:6px 12px;border-bottom:1px solid #eee">${clamp(data.budget) || '—'}</td></tr>
+            <tr><td style="padding:6px 12px;font-weight:bold;border-bottom:1px solid #eee">Interests</td><td style="padding:6px 12px;border-bottom:1px solid #eee">${interests.length ? interests.join(', ') : '—'}</td></tr>
+          </table>
+          <div style="margin-top:1rem;padding:1rem;background:#f8f6f1;border-radius:6px">
+            <strong>Message:</strong><br><div style="white-space:pre-wrap;margin-top:.5rem">${clamp(data.message)}</div>
+          </div>
+          <p style="margin-top:1rem"><a href="https://zaffronvale.com/admin.html" style="color:#E2912E">Open Admin Dashboard</a></p>
+        </div>`;
+
+      const sendEmail = (to, subject, html) =>
+        fetch('https://api.resend.com/emails', {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${process.env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ from: fromAddr, to: [to], subject, html })
+        }).catch(err => console.error('Email send error:', err));
+
+      // Fire both emails in parallel, don't await — form response shouldn't wait
+      Promise.all([
+        sendEmail(customerEmail, 'We received your enquiry — Zaffron Vale', customerHtml),
+        sendEmail(businessEmail, `New lead: ${customerName}`, bizHtml)
+      ]).catch(err => console.error('Email error:', err));
+    }
+
     if (wasForm) return formRedirect(true);
     return {
       statusCode: 200,

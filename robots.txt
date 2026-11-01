@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://ubiquitous-tulumba-9d2b34.netlify.app/sitemap.xml
+Sitemap: https://zaffronvale.com/sitemap.xml
